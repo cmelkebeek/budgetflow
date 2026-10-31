@@ -1,0 +1,45 @@
+/* ---------- Tableau ---------- */
+
+.table-card {
+  padding: 0.5rem 1.25rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+th,
+td {
+  text-align: right;
+  padding: 0.65rem 0.25rem;
+}
+
+th {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+tbody tr {
+  border-top: 1px solid var(--border);
+}
+
+th:first-child,
+td:first-child {
+  text-align: left;
+}
+
+td:first-child::first-letter {
+  text-transform: uppercase;
+}
+
+tr.clickable {
+  cursor: pointer;
+}
+
+tr.clickable:hover {
+  background: var(--hover);
+}
+

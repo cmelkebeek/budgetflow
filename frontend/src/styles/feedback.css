@@ -1,0 +1,117 @@
+/* ---------- États ---------- */
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.4rem;
+  padding: 1.5rem 1rem;
+}
+
+.empty.compact {
+  padding: 0.5rem 0;
+}
+
+.empty h2 {
+  font-size: 1.05rem;
+}
+
+.empty-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  margin-bottom: 0.4rem;
+}
+
+.skeleton {
+  height: 14px;
+  border-radius: 6px;
+  margin: 0.6rem 0;
+  background: linear-gradient(90deg, var(--surface-2), var(--hover), var(--surface-2));
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite linear;
+}
+
+.skeleton:first-child {
+  width: 40%;
+  height: 28px;
+}
+
+.skeleton-line {
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--surface-2), var(--hover), var(--surface-2));
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite linear;
+}
+
+.skeleton-line.short {
+  width: 30%;
+}
+
+.skeleton-line.medium {
+  width: 60%;
+  height: 18px;
+  margin-top: 0.4rem;
+}
+
+.skeleton-line.hero-value-skel {
+  width: 45%;
+  height: 44px;
+  border-radius: 10px;
+}
+
+.skeleton-line.bar {
+  height: 14px;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.toaster {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.toast {
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  background: var(--text);
+  color: var(--surface);
+  font-size: 0.9rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  animation: toast-in 0.2s ease-out;
+}
+
+.toast.error {
+  background: var(--critical);
+  color: #ffffff;
+}
+
+.toast.success {
+  background: #0f7a3a;
+  color: #ffffff;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+

@@ -1,0 +1,97 @@
+/* Couleurs et typographie : thème clair par défaut, thème sombre (système ou forcé). */
+
+/* ---------- Thème ---------- */
+
+:root {
+  color-scheme: light;
+  --page: #f6f6f3;
+  --surface: #ffffff;
+  --surface-2: #f0efec;
+  --hover: rgba(11, 11, 11, 0.04);
+  --border: rgba(11, 11, 11, 0.1);
+  --text: #0b0b0b;
+  --text-2: #52514e;
+  --muted: #898781;
+  --grid: #e1e0d9;
+  --baseline: #c3c2b7;
+  --track: #f0efec;
+  --focus: #6250d6;
+  --critical: #d03b3b;
+  --good: #006300;
+  --shadow: 0 1px 2px rgba(11, 11, 11, 0.04), 0 1px 1px rgba(11, 11, 11, 0.02);
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  /* Accent de l'interface (boutons, navigation, liens) : violet, distinct des couleurs des graphiques. */
+  --accent: #6250d6;
+  --accent-hover: #5341c4;
+  --accent-ink: #4a3aa7; /* texte ou icône en accent sur fond clair */
+  --accent-soft: color-mix(in srgb, var(--accent) 12%, transparent);
+  --on-accent: #ffffff;
+
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--text);
+  background: var(--page);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Sombre : suit le système, sauf si l'utilisateur a forcé un thème (data-theme sur <html>).
+   Les valeurs sont dupliquées car le CSS ne permet pas de partager un bloc entre les deux sélecteurs. */
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme='light'])) {
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --surface-2: #242423;
+    --hover: rgba(255, 255, 255, 0.05);
+    --border: rgba(255, 255, 255, 0.1);
+    --text: #f0efec;
+    --text-2: #c3c2b7;
+    --muted: #898781;
+    --grid: #2c2c2a;
+    --baseline: #383835;
+    --track: #383835;
+    --focus: #8d81ec;
+    --critical: #e66767;
+    --good: #0ca30c;
+    --shadow: none;
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --accent: #6d5fdc;
+    --accent-hover: #7e71e6;
+    --accent-ink: #b3aaf5;
+    --accent-soft: color-mix(in srgb, var(--accent) 22%, transparent);
+    --on-accent: #ffffff;
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --page: #0d0d0d;
+  --surface: #1a1a19;
+  --surface-2: #242423;
+  --hover: rgba(255, 255, 255, 0.05);
+  --border: rgba(255, 255, 255, 0.1);
+  --text: #f0efec;
+  --text-2: #c3c2b7;
+  --muted: #898781;
+  --grid: #2c2c2a;
+  --baseline: #383835;
+  --track: #383835;
+  --focus: #8d81ec;
+  --critical: #e66767;
+  --good: #0ca30c;
+  --shadow: none;
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --accent: #6d5fdc;
+  --accent-hover: #7e71e6;
+  --accent-ink: #b3aaf5;
+  --accent-soft: color-mix(in srgb, var(--accent) 22%, transparent);
+  --on-accent: #ffffff;
+}
+

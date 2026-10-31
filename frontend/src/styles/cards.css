@@ -1,0 +1,129 @@
+/* ---------- Cartes ---------- */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+
+.section {
+  padding: 0;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-head h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.section-total {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.section-empty {
+  padding: 1rem 1.25rem;
+}
+
+.count {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--muted);
+  background: var(--surface-2);
+  border-radius: 999px;
+  padding: 0 0.45rem;
+}
+
+.swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex: none;
+}
+
+.swatch.track {
+  background: var(--track);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+.swatch.tick {
+  height: 2px;
+  width: 14px;
+  border-radius: 1px;
+  background: var(--text-2);
+}
+
+
+/* Pastille d'icône colorée. La teinte vient de --chip-color (classes tone-*) : fond en lavis,
+   icône mélangée avec la couleur du texte pour rester contrastée en clair comme en sombre. */
+.icon-chip {
+  --chip-color: var(--accent);
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--chip-color) 15%, transparent);
+  color: color-mix(in srgb, var(--chip-color) 78%, var(--text));
+}
+
+.icon-chip.small {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+}
+
+.icon-chip.large {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+}
+
+/* Mêmes teintes que les séries des graphiques : charges en bleu, achats en orange, autres en vert d'eau. */
+.tone-accent {
+  --chip-color: var(--accent);
+}
+
+.tone-blue {
+  --chip-color: var(--series-1);
+}
+
+.tone-orange {
+  --chip-color: var(--series-2);
+}
+
+.tone-aqua {
+  --chip-color: var(--series-3);
+}
+
+.tone-good {
+  --chip-color: var(--good);
+}
+
+.tone-critical {
+  --chip-color: var(--critical);
+}

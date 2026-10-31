@@ -1,0 +1,203 @@
+/* ---------- Graphiques ---------- */
+
+.budget-bar {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.bar-wrap {
+  position: relative;
+}
+
+.bar-track {
+  display: flex;
+  gap: 2px;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--track);
+  overflow: hidden;
+}
+
+.bar-seg {
+  flex: 0 1 auto;
+  min-width: 3px;
+  height: 100%;
+  cursor: default;
+  transition: opacity 0.15s;
+}
+
+.bar-seg:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
+.bar-track:hover .bar-seg:not(:hover) {
+  opacity: 0.55;
+}
+
+.bar-seg:focus-visible {
+  outline-offset: 1px;
+}
+
+.income-marker {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--text);
+  border-radius: 1px;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
+  font-size: 0.85rem;
+  color: var(--text-2);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legend-item strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.legend-item.critical,
+.legend-item.critical strong {
+  color: var(--critical);
+}
+
+.chart-tip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  font-size: 0.8rem;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 5;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+}
+
+.history-chart {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.plot {
+  display: grid;
+  grid-template-columns: 2.75rem 1fr;
+  grid-template-rows: 200px auto;
+  column-gap: 0.5rem;
+}
+
+.y-axis {
+  position: relative;
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.y-axis span {
+  position: absolute;
+  right: 0;
+  transform: translateY(50%);
+}
+
+.plot-area {
+  position: relative;
+  display: flex;
+}
+
+.gridline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--grid);
+}
+
+.gridline.baseline {
+  background: var(--baseline);
+}
+
+.col-slot {
+  position: relative;
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.col-slot:hover {
+  background: var(--hover);
+}
+
+.col {
+  display: block;
+  width: min(24px, 60%);
+  background: var(--series-1);
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  z-index: 1;
+}
+
+.income-tick {
+  position: absolute;
+  left: 50%;
+  width: min(36px, 80%);
+  height: 2px;
+  transform: translate(-50%, 50%);
+  background: var(--text-2);
+  border-radius: 1px;
+  z-index: 2;
+}
+
+/* Dans l'historique, l'info-bulle se place à côté de la colonne pour ne pas sortir du graphique. */
+.chart-tip.side {
+  top: 0;
+  bottom: auto;
+  left: calc(50% + 22px);
+  transform: none;
+}
+
+.chart-tip.side.left {
+  left: auto;
+  right: calc(50% + 22px);
+}
+
+.x-axis {
+  display: flex;
+  padding-top: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.x-axis span {
+  flex: 1;
+  text-align: center;
+}
+

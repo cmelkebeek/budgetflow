@@ -1,0 +1,89 @@
+/* ---------- Mobile ---------- */
+
+@media (max-width: 760px) {
+  .shell {
+    display: block;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: auto;
+    z-index: 50;
+    padding: 0.3rem 0.25rem calc(0.3rem + env(safe-area-inset-bottom));
+    border-right: none;
+    border-top: 1px solid var(--border);
+  }
+
+  .brand,
+  .sidebar-user {
+    display: none;
+  }
+
+  .sidebar nav {
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .nav-item {
+    flex: 1;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.35rem 0.1rem;
+    font-size: 0.7rem;
+    text-align: center;
+  }
+
+  .nav-item.active {
+    background: transparent;
+  }
+
+  .content {
+    padding: 1.25rem 0.85rem 6rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.35rem;
+  }
+
+  .hero {
+    padding: 1.25rem;
+  }
+
+  .hero-value {
+    font-size: 2.4rem;
+  }
+
+  .stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stats .stat:last-child {
+    grid-column: span 2;
+  }
+
+  .row {
+    padding-left: 0.6rem;
+    padding-right: 0.4rem;
+    gap: 0.35rem;
+  }
+
+  .inline.amount {
+    width: 5.5rem;
+  }
+
+  .amount-value {
+    min-width: 5.5rem;
+  }
+
+  .section-head {
+    padding: 0.8rem 1rem;
+  }
+
+  .toaster {
+    bottom: 5.5rem;
+  }
+}

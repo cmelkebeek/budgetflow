@@ -1,0 +1,247 @@
+/* ---------- Animations & chargement ---------- */
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Entrée des pages : les blocs apparaissent l'un après l'autre. */
+.content > * {
+  animation: fade-up 0.4s both;
+}
+
+.content > :nth-child(2) {
+  animation-delay: 0.05s;
+}
+
+.content > :nth-child(3) {
+  animation-delay: 0.1s;
+}
+
+.content > :nth-child(n + 4) {
+  animation-delay: 0.15s;
+}
+
+.stack-lg > * {
+  animation: fade-up 0.4s both;
+}
+
+.stack-lg > :nth-child(2) {
+  animation-delay: 0.06s;
+}
+
+.stack-lg > :nth-child(3) {
+  animation-delay: 0.12s;
+}
+
+.stack-lg > :nth-child(n + 4) {
+  animation-delay: 0.18s;
+}
+
+.spinner {
+  display: inline-block;
+  flex: none;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin 0.9s linear infinite;
+}
+
+.splash {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  color: var(--muted);
+  /* N'apparaît que si la vérification de session traîne, pour éviter un flash. */
+  animation: fade-in 0.3s 0.2s both;
+}
+
+.splash .logo {
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    transform: scale(0.92);
+    opacity: 0.7;
+  }
+}
+
+.top-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 200;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.top-loader.active {
+  opacity: 1;
+}
+
+.top-loader::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, var(--focus), transparent);
+  animation: loader-slide 1s ease-in-out infinite;
+}
+
+@keyframes loader-slide {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(250%);
+  }
+}
+
+.shake {
+  animation: shake 0.35s;
+}
+
+@keyframes shake {
+  25% {
+    transform: translateX(-5px);
+  }
+
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+/* Bienvenue après connexion */
+.welcome {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  place-items: center;
+  background: var(--page);
+  cursor: pointer;
+  animation: fade-in 0.25s both;
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
+}
+
+.welcome.leaving {
+  opacity: 0;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+
+.welcome-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+  padding: 1rem;
+}
+
+.welcome .logo.xl {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  margin-bottom: 0.5rem;
+  animation: pop 0.6s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.4) rotate(-12deg);
+    opacity: 0;
+  }
+}
+
+.welcome h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  animation: fade-up 0.5s 0.2s both;
+}
+
+.welcome p {
+  color: var(--muted);
+  animation: fade-up 0.5s 0.35s both;
+}
+
+.welcome-bar {
+  display: flex;
+  gap: 2px;
+  width: 200px;
+  height: 6px;
+  margin-top: 1rem;
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--track);
+  animation: fade-in 0.3s 0.4s both;
+}
+
+.welcome-bar span {
+  transform-origin: left;
+  animation: grow-x 0.5s ease-out both;
+}
+
+.welcome-bar span:nth-child(1) {
+  width: 48%;
+  animation-delay: 0.5s;
+}
+
+.welcome-bar span:nth-child(2) {
+  width: 22%;
+  animation-delay: 0.85s;
+}
+
+.welcome-bar span:nth-child(3) {
+  width: 12%;
+  animation-delay: 1.15s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .spinner,
+  .spin,
+  .top-loader::after {
+    animation-duration: 1s !important;
+    animation-iteration-count: infinite !important;
+  }
+}
+

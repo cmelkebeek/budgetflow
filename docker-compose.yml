@@ -1,0 +1,24 @@
+services:
+  budget:
+    build: .
+    container_name: budget-manager
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    # Toute la configuration propre à l'installation est dans le fichier .env (voir .env.example) :
+    # ce fichier-ci reste identique d'une installation à l'autre.
+    # Syntaxe : ${VAR:-défaut} = valeur par défaut si absente ; ${VAR:?message} = obligatoire, sinon Compose s'arrête avec le message.
+    environment:
+      PUBLIC_URL: "${PUBLIC_URL:-http://localhost:3000}"
+      COOKIE_SECURE: "${COOKIE_SECURE:-}"
+      ENCRYPTION_KEY: "${ENCRYPTION_KEY:?ENCRYPTION_KEY manquante dans .env - voir .env.example}"
+      SMTP_HOST: "${SMTP_HOST:-}"
+      SMTP_PORT: "${SMTP_PORT:-587}"
+      SMTP_USER: "${SMTP_USER:-}"
+      SMTP_PASS: "${SMTP_PASS:-}"
+      SMTP_FROM: "${SMTP_FROM:-}"
+    volumes:
+      - budget-data:/data
+
+volumes:
+  budget-data:

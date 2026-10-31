@@ -1,0 +1,125 @@
+/* ---------- Formulaires ---------- */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+.field input,
+.input-suffix {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--text);
+}
+
+.field input:focus,
+.input-suffix:focus-within {
+  border-color: var(--focus);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 20%, transparent);
+}
+
+.input-suffix {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.input-suffix input,
+.field .input-suffix input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  text-align: left;
+  outline: none;
+}
+
+.input-suffix span {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.hint {
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+.field input,
+.input-suffix input {
+  width: 100%;
+  min-width: 0;
+}
+
+.share-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.share-row .input-suffix {
+  width: 7rem;
+}
+
+.preview {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--text-2);
+}
+
+.preview strong {
+  color: var(--text);
+  font-size: 1.1rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.inline-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.inline-form .field {
+  text-align: left;
+}
+
+.form-error {
+  color: var(--critical);
+  font-size: 0.85rem;
+}
+

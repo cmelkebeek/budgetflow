@@ -1,0 +1,20 @@
+{
+  // Le serveur est exécuté directement par Node (suppression des types à la volée) : pas de compilation,
+  // seulement une vérification des types. D'où les imports en .ts et la syntaxe limitée à ce qui s'efface.
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "types": ["node"],
+    "strict": true,
+    "skipLibCheck": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true
+  },
+  "include": ["src", "../shared"]
+}

@@ -1,0 +1,205 @@
+/* ---------- Lignes ---------- */
+
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem 0;
+}
+
+.card.rows {
+  padding: 0.25rem 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.75rem 0.4rem 1rem;
+  min-height: 52px;
+}
+
+.row + .row {
+  border-top: 1px solid var(--border);
+}
+
+.row:hover {
+  background: var(--hover);
+}
+
+.row-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.row-title {
+  font-weight: 500;
+}
+
+.row-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.6rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.row-meta:empty {
+  display: none;
+}
+
+.row-icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--text-2);
+}
+
+.row.paid .inline.name,
+.row.paid .amount-value,
+.row.paid .inline.amount:not(.km-input) {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.amount-value {
+  min-width: 6.5rem;
+  text-align: right;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  padding-right: 0.4rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: var(--surface-2);
+  color: var(--text-2);
+  border-radius: 999px;
+  padding: 0.05rem 0.5rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.check {
+  display: grid;
+  place-items: center;
+  border: none;
+  background: transparent;
+  padding: 0.2rem;
+  border-radius: 50%;
+  color: var(--baseline);
+  cursor: pointer;
+  flex: none;
+}
+
+.check:hover {
+  color: var(--text-2);
+}
+
+.check.checked {
+  color: var(--good);
+}
+
+/* Champs éditables sur place : discrets jusqu'au survol / focus. */
+.inline {
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 6px;
+  padding: 0.2rem 0.4rem;
+  min-width: 0;
+}
+
+.inline:hover {
+  border-color: var(--border);
+}
+
+.inline:focus {
+  border-color: var(--focus);
+  background: var(--surface);
+  outline: none;
+}
+
+.inline.name {
+  font-weight: 500;
+  width: 100%;
+  margin-left: -0.4rem;
+}
+
+.inline.amount {
+  width: 7rem;
+  text-align: right;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.km .inline.km-input {
+  width: 3.2rem;
+  padding: 0 0.2rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: right;
+  color: var(--text);
+}
+
+.km .inline.km-input:not(:focus) {
+  border-color: transparent;
+  background: transparent;
+}
+
+.add-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem 0.6rem 1.1rem;
+  border-top: 1px solid var(--border);
+}
+
+.add-row.standalone {
+  border-top: 1px solid var(--border);
+  padding: 0.6rem 0.75rem 0.6rem 1.1rem;
+}
+
+.add-row input:not(.amount),
+.add-row select {
+  flex: 1;
+  min-width: 0;
+}
+
+.add-row input,
+.add-row select {
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 6px;
+  padding: 0.35rem 0.45rem;
+}
+
+.add-row input:focus,
+.add-row select:focus {
+  border-color: var(--focus);
+  outline: none;
+}
+
+.add-row input.amount {
+  width: 6.5rem;
+  text-align: right;
+}
+
+.add-row select {
+  color: var(--text-2);
+  cursor: pointer;
+}
+
+
+/* Badges teintés (même mécanique que les pastilles d'icônes). */
+.badge[class*='tone-'] {
+  background: color-mix(in srgb, var(--chip-color) 14%, transparent);
+  color: color-mix(in srgb, var(--chip-color) 70%, var(--text));
+}
