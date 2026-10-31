@@ -4,7 +4,7 @@ import { toast } from '../../lib/toast';
 
 // Affiche les codes de secours une seule fois, avec copie et téléchargement.
 export function RecoveryCodesDialog({ codes, onClose }: { codes: string[]; onClose: () => void }) {
-  const content = `Codes de secours Budget (${new Date().toLocaleDateString('fr-FR')})\nChaque code ne fonctionne qu'une seule fois.\n\n${codes.join('\n')}\n`;
+  const content = `Codes de secours BudgetFlow (${new Date().toLocaleDateString('fr-FR')})\nChaque code ne fonctionne qu'une seule fois.\n\n${codes.join('\n')}\n`;
 
   const copy = () =>
     navigator.clipboard.writeText(content).then(
@@ -16,7 +16,7 @@ export function RecoveryCodesDialog({ codes, onClose }: { codes: string[]; onClo
     const url = URL.createObjectURL(new Blob([content], { type: 'text/plain' }));
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'budget-codes-de-secours.txt';
+    a.download = 'budgetflow-codes-de-secours.txt';
     a.click();
     URL.revokeObjectURL(url);
   };

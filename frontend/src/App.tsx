@@ -89,7 +89,7 @@ export function App() {
           <span className="logo">
             <Wallet size={18} />
           </span>
-          Budget
+          BudgetFlow
         </div>
         <nav>
           {NAV.map(({ id, label, icon: Icon }) => (

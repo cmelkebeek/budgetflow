@@ -31,7 +31,7 @@ function render({ name, paragraphs, action, footer }: Message) {
   const html = `<!doctype html>
 <html lang="fr"><body style="margin:0;padding:24px;background:#f6f6f3;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:#0b0b0b">
   <div style="max-width:480px;margin:0 auto;background:#ffffff;border:1px solid #e1e0d9;border-radius:14px;padding:28px">
-    <p style="margin:0 0 20px;font-weight:650;font-size:17px">Budget</p>
+    <p style="margin:0 0 20px;font-weight:650;font-size:17px">BudgetFlow</p>
     <p style="margin:0 0 14px">Bonjour ${escapeHtml(name)},</p>
     ${paragraphs.map((p) => `<p style="margin:0 0 14px;line-height:1.5">${escapeHtml(p)}</p>`).join('\n    ')}
     ${
@@ -57,7 +57,7 @@ export const sendResetEmail = (to: string, name: string, token: string) =>
     name,
     subject: 'Réinitialiser ton mot de passe',
     paragraphs: [
-      'Tu as demandé à réinitialiser le mot de passe de ton compte Budget.',
+      'Tu as demandé à réinitialiser le mot de passe de ton compte BudgetFlow.',
       'Ce lien est valable 30 minutes et ne fonctionne qu’une seule fois.',
     ],
     // Le jeton est dans le fragment (#) : il n'est jamais envoyé au serveur ni écrit dans les journaux du proxy.
@@ -71,7 +71,7 @@ export const sendPasswordChangedEmail = (to: string, name: string) =>
     name,
     subject: 'Ton mot de passe a été modifié',
     paragraphs: [
-      `Le mot de passe de ton compte Budget vient d'être modifié (${new Date().toLocaleString('fr-FR', { timeZone: process.env.TZ || 'Europe/Paris' })}).`,
+      `Le mot de passe de ton compte BudgetFlow vient d'être modifié (${new Date().toLocaleString('fr-FR', { timeZone: process.env.TZ || 'Europe/Paris' })}).`,
     ],
     footer: "Si ce n'est pas toi, réinitialise ton mot de passe tout de suite et vérifie tes passkeys.",
   });
@@ -81,7 +81,7 @@ export const sendTestEmail = (to: string, name: string) =>
     to,
     name,
     subject: 'E-mail de test',
-    paragraphs: ["Si tu lis ceci, l'envoi d'e-mails de Budget fonctionne."],
+    paragraphs: ["Si tu lis ceci, l'envoi d'e-mails de BudgetFlow fonctionne."],
     footer: 'Tu peux supprimer cet e-mail.',
   });
 

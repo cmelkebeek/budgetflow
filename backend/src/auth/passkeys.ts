@@ -126,7 +126,7 @@ export async function beginPasskeyRegistration(user: User, origin: string | unde
   const rp = relyingParty(origin);
   const existing = all<PasskeyRow>('SELECT * FROM passkeys WHERE user_id = ? AND rp_id = ?', user.id, rp.rpID);
   const options = await generateRegistrationOptions({
-    rpName: 'Budget',
+    rpName: 'BudgetFlow',
     rpID: rp.rpID,
     userName: user.username,
     userDisplayName: user.displayName,

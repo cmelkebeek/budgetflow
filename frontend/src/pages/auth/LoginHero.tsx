@@ -40,7 +40,7 @@ export function LoginHero() {
         <span className="logo">
           <Wallet size={18} />
         </span>
-        Budget
+        BudgetFlow
       </div>
 
       <div className="login-hero-body">

@@ -46,7 +46,7 @@ export function hotp(secret: Buffer, counter: number): string {
 export const newSecret = () => base32Encode(randomBytes(20));
 
 export const otpauthUri = (secret: string, account: string) =>
-  `otpauth://totp/Budget:${encodeURIComponent(account)}?secret=${secret}&issuer=Budget&digits=6&period=${STEP_SECONDS}`;
+  `otpauth://totp/BudgetFlow:${encodeURIComponent(account)}?secret=${secret}&issuer=BudgetFlow&digits=6&period=${STEP_SECONDS}`;
 
 /**
  * Renvoie le pas de temps validé, ou null. Accepte ±1 pas de décalage d'horloge,

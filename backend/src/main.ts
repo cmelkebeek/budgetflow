@@ -52,4 +52,4 @@ app.get('*', serveStatic({ path: `${FRONTEND_DIR}/index.html` }));
 purgeExpired();
 setInterval(purgeExpired, 3_600_000).unref();
 
-serve({ fetch: app.fetch, port: PORT }, () => console.log(`Budget Manager sur http://localhost:${PORT}`));
+serve({ fetch: app.fetch, port: PORT }, () => console.log(`BudgetFlow sur http://localhost:${PORT}`));
