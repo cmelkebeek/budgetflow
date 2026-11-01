@@ -148,3 +148,35 @@ button:disabled {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
 }
 
+
+/* Action destructive confirmée (ex. « Supprimer » dans une fenêtre de confirmation). */
+.primary.danger {
+  border-color: var(--critical);
+  background: var(--critical);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.primary.danger:not(:disabled):hover {
+  background: color-mix(in srgb, var(--critical) 88%, #000000);
+  border-color: color-mix(in srgb, var(--critical) 88%, #000000);
+}
+
+/* Lien destructif discret, centré en bas de page (façon iOS). */
+.text-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  align-self: center;
+  border: none;
+  background: transparent;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  color: var(--critical);
+  font-weight: 500;
+}
+
+.text-danger:hover {
+  background: color-mix(in srgb, var(--critical) 8%, transparent);
+}

@@ -23,6 +23,7 @@ import { BudgetBar } from '../../components/charts';
 import { Spinner } from '../../components/feedback';
 import { AmountInput, CheckButton, TextInput } from '../../components/inputs';
 import { EmptyState, IconChip, PageHeader, Skeleton, type Tone } from '../../components/layout';
+import { Modal } from '../../components/Modal';
 import { currentMonth, money, monthLabel, parseAmount, shiftMonth, toInput } from '../../lib/format';
 import { toastError } from '../../lib/toast';
 
@@ -80,13 +81,15 @@ export function MonthPage({ month, onMonthChange }: { month: string; onMonthChan
         title={monthLabel(month)}
         subtitle={isCurrent ? 'Mois en cours' : 'Mois passé ou à venir'}
         icon={<CalendarDays size={20} />}
+        leading={
+          !isCurrent && (
+            <button className="ghost" onClick={() => onMonthChange(currentMonth())}>
+              Aujourd'hui
+            </button>
+          )
+        }
         actions={
           <>
-            {!isCurrent && (
-              <button className="ghost" onClick={() => onMonthChange(currentMonth())}>
-                Aujourd'hui
-              </button>
-            )}
             <button className="icon-btn bordered" onClick={() => onMonthChange(shiftMonth(month, -1))} aria-label="Mois précédent">
               <ChevronLeft size={18} />
             </button>
@@ -103,7 +106,7 @@ export function MonthPage({ month, onMonthChange }: { month: string; onMonthChan
       ) : !data ? (
         <MonthSkeleton />
       ) : data.month ? (
-        <MonthDetails data={data.month} apply={apply} />
+        <MonthDetails data={data.month} apply={apply} onDeleted={setData} />
       ) : (
         <CreateMonth month={month} suggestedIncome={data.suggestedIncome} apply={apply} />
       )}
@@ -163,8 +166,9 @@ function CreateMonth({ month, suggestedIncome, apply }: { month: string; suggest
   );
 }
 
-function MonthDetails({ data, apply }: { data: Month; apply: Apply }) {
+function MonthDetails({ data, apply, onDeleted }: { data: Month; apply: Apply; onDeleted: (response: MonthResponse) => void }) {
   const [syncing, setSyncing] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const income = totalIncome(data);
   const spent = sum(data.lines);
   const remaining = income - spent;
@@ -270,6 +274,10 @@ function MonthDetails({ data, apply }: { data: Month; apply: Apply }) {
           onAdd={(name, amount) => apply(api(`/months/${data.month}/lines`, { method: 'POST', body: { name, amount } }))}
         />
       </Section>
+      <button className="text-danger" onClick={() => setConfirmDelete(true)}>
+        <Trash2 size={15} /> Supprimer ce mois
+      </button>
+      {confirmDelete && <DeleteMonthDialog data={data} onClose={() => setConfirmDelete(false)} onDeleted={onDeleted} />}
     </div>
   );
 }
@@ -458,5 +466,49 @@ function AddWish({ data, apply }: { data: Month; apply: Apply }) {
         ))}
       </select>
     </div>
+  );
+}
+
+// Confirmation avant suppression : rappelle ce qui part avec le mois et ce qui est conservé.
+function DeleteMonthDialog({ data, onClose, onDeleted }: { data: Month; onClose: () => void; onDeleted: (response: MonthResponse) => void }) {
+  const [busy, setBusy] = useState(false);
+  const wishes = data.lines.filter((l) => l.kind === 'purchase').length;
+  const count = (n: number, word: string) => `${n} ${word}${n > 1 ? 's' : ''}`;
+  // Ce qui part avec le mois, sans citer ce qui est vide.
+  const parts = [
+    'le revenu',
+    data.lines.length > 0 && count(data.lines.length, 'ligne'),
+    data.incomes.length > 0 && `${count(data.incomes.length, 'entrée')} d'argent`,
+  ].filter((p) => typeof p === 'string');
+  const listed = parts.length > 1 ? `${parts.slice(0, -1).join(', ')} et ${parts.at(-1)}` : parts[0];
+
+  const remove = async () => {
+    setBusy(true);
+    try {
+      onDeleted(await api<MonthResponse>(`/months/${data.month}`, { method: 'DELETE' }));
+    } catch (e) {
+      toastError(e);
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Modal title={`Supprimer ${monthLabel(data.month)} ?`} onClose={onClose}>
+      <div className="form">
+        <p className="subtitle">
+          Tout le mois sera supprimé définitivement : {listed}.
+          {wishes > 0 && ` ${wishes > 1 ? 'Les souhaits prévus redeviendront' : 'Le souhait prévu redeviendra'} à prévoir.`} Tes charges
+          récurrentes ne changent pas.
+        </p>
+        <footer className="form-actions">
+          <button type="button" className="ghost" onClick={onClose}>
+            Annuler
+          </button>
+          <button type="button" className="primary danger" onClick={remove} disabled={busy}>
+            {busy && <Spinner />} Supprimer
+          </button>
+        </footer>
+      </div>
+    </Modal>
   );
 }

@@ -79,12 +79,113 @@
   }
 
   .content {
-    padding: 1.25rem max(0.85rem, env(safe-area-inset-right)) calc(5.5rem + env(safe-area-inset-bottom))
+    padding: 0 max(0.85rem, env(safe-area-inset-right)) calc(5.5rem + env(safe-area-inset-bottom))
       max(0.85rem, env(safe-area-inset-left));
   }
 
+  /* Barre du haut façon iOS : transparente sur le grand titre, puis floutée avec le titre en petit au défilement. */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 0.5rem;
+    height: calc(48px + env(safe-area-inset-top));
+    padding: env(safe-area-inset-top) max(0.35rem, env(safe-area-inset-right)) 0 max(0.35rem, env(safe-area-inset-left));
+    margin: 0 calc(-1 * max(0.85rem, env(safe-area-inset-right))) -0.75rem calc(-1 * max(0.85rem, env(safe-area-inset-left)));
+    border-bottom: 0.5px solid transparent;
+    transition:
+      background-color 0.2s,
+      border-color 0.2s;
+  }
+
+  .topbar.condensed {
+    background: color-mix(in srgb, var(--page) 78%, transparent);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-bottom-color: var(--border);
+  }
+
+  .topbar-title {
+    max-width: 50vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity 0.2s,
+      transform 0.2s;
+  }
+
+  .topbar-title::first-letter {
+    text-transform: uppercase;
+  }
+
+  .topbar.condensed .topbar-title {
+    opacity: 1;
+    transform: none;
+  }
+
+  .topbar-side {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .topbar-side.end {
+    justify-content: flex-end;
+  }
+
+  /* Boutons de barre iOS : texte et icônes teintés, sans cadre. */
+  .topbar .icon-btn,
+  .topbar .icon-btn.bordered {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--accent-ink);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .topbar .icon-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .topbar .ghost {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    padding: 0.4rem 0.5rem;
+    color: var(--accent-ink);
+    font-size: 1.0625rem;
+    font-weight: 500;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .topbar .icon-btn:active,
+  .topbar .ghost:active {
+    opacity: 0.4;
+    background: transparent;
+  }
+
+  /* Grand titre iOS : sans pastille d'icône, boutons déplacés dans la barre du haut. */
+  .page-header .icon-chip,
+  .page-header .actions {
+    display: none;
+  }
+
   .page-header h1 {
-    font-size: 1.35rem;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
   }
 
   .hero {

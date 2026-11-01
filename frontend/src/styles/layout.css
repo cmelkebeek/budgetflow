@@ -161,3 +161,8 @@
   align-items: center;
 }
 
+
+/* Barre du haut : mobile uniquement (voir responsive.css). */
+.topbar {
+  display: none;
+}

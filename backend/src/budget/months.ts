@@ -57,6 +57,12 @@ function loadMonth(id: number): Month {
   return { month: m.month, income: m.income, incomes, lines };
 }
 
+// Un mois pas encore créé est proposé avec le revenu du dernier mois saisi.
+function monthResponse(userId: number, id: number | null): MonthResponse {
+  const last = get<{ income: number }>('SELECT income FROM months WHERE user_id = ? ORDER BY month DESC LIMIT 1', userId);
+  return { month: id === null ? null : loadMonth(id), suggestedIncome: last?.income ?? 0 };
+}
+
 function insertRecurringLine(monthId: number, r: Recurring) {
   run(
     `INSERT INTO lines (month_id, name, amount, kind, share, fuel, recurring_id) VALUES (?, ?, ?, 'recurring', ?, ?, ?)`,
@@ -94,10 +100,7 @@ monthRoutes.get('/', (c) =>
 
 monthRoutes.get('/:month', (c) => {
   const month = monthParam(c.req.param('month'));
-  const id = monthId(c.var.user.id, month);
-  const last = get<{ income: number }>('SELECT income FROM months WHERE user_id = ? ORDER BY month DESC LIMIT 1', c.var.user.id);
-  const response: MonthResponse = { month: id === undefined ? null : loadMonth(id), suggestedIncome: last?.income ?? 0 };
-  return c.json(response);
+  return c.json(monthResponse(c.var.user.id, monthId(c.var.user.id, month) ?? null));
 });
 
 monthRoutes.post('/:month', async (c) => {
@@ -111,6 +114,13 @@ monthRoutes.post('/:month', async (c) => {
     return id;
   });
   return c.json(loadMonth(id));
+});
+
+// Supprime un mois avec ses lignes et ses entrées. Les souhaits qui y étaient prévus redeviennent à prévoir.
+monthRoutes.delete('/:month', (c) => {
+  const userId = c.var.user.id;
+  run('DELETE FROM months WHERE id = ?', requireMonth(userId, monthParam(c.req.param('month'))));
+  return c.json(monthResponse(userId, null));
 });
 
 monthRoutes.patch('/:month', async (c) => {
