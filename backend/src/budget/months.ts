@@ -145,7 +145,7 @@ monthRoutes.post('/:month/sync', (c) => {
   return c.json(loadMonth(id));
 });
 
-// Ajoute une dépense ponctuelle, ou un achat de la liste (wishId).
+// Ajoute une dépense ponctuelle (déjà payée : on la saisit une fois faite), ou un achat de la liste (wishId).
 monthRoutes.post('/:month/lines', async (c) => {
   const userId = c.var.user.id;
   const id = requireMonth(userId, monthParam(c.req.param('month')));
@@ -160,7 +160,7 @@ monthRoutes.post('/:month/lines', async (c) => {
     if (get('SELECT 1 FROM lines WHERE wish_id = ?', wish.id)) throw fail(409, 'Cet achat est déjà prévu dans un mois');
     run(`INSERT INTO lines (month_id, name, amount, kind, wish_id) VALUES (?, ?, ?, 'purchase', ?)`, id, wish.name, wish.price, wish.id);
   } else {
-    run(`INSERT INTO lines (month_id, name, amount, kind) VALUES (?, ?, ?, 'extra')`, id, text(body.name, 'nom'), amount(body.amount, 'montant'));
+    run(`INSERT INTO lines (month_id, name, amount, kind, paid) VALUES (?, ?, ?, 'extra', 1)`, id, text(body.name, 'nom'), amount(body.amount, 'montant'));
   }
   return c.json(loadMonth(id));
 });
