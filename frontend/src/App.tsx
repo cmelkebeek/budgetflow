@@ -1,4 +1,4 @@
-import { CalendarDays, ChartColumn, LogOut, Moon, Repeat, ShoppingBag, Sun, UserRound, Wallet } from 'lucide-react';
+import { CalendarDays, ChartColumn, Gift, LogOut, Moon, Repeat, Sun, UserRound, Wallet } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { User } from '../../shared/types';
 import { ReauthPrompt } from './components/ReauthPrompt';
@@ -18,7 +18,7 @@ import { WishesPage } from './pages/wishes/WishesPage';
 const NAV = [
   { id: 'month', label: 'Mois', icon: CalendarDays },
   { id: 'recurring', label: 'Charges', icon: Repeat },
-  { id: 'wishes', label: 'Achats', icon: ShoppingBag },
+  { id: 'wishes', label: 'Souhaits', icon: Gift },
   { id: 'history', label: 'Historique', icon: ChartColumn },
   { id: 'account', label: 'Compte', icon: UserRound },
 ] as const;

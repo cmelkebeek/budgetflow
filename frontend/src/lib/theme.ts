@@ -10,8 +10,20 @@ export function getTheme(): Theme {
   return stored === 'light' || stored === 'dark' ? stored : 'system';
 }
 
+// Couleur de la barre du navigateur (Safari iOS…) : celle du fond de page (--page) du thème affiché.
+const PAGE_COLOR = { light: '#f6f6f3', dark: '#0d0d0d' };
+
+function syncThemeColor(theme: Theme) {
+  for (const meta of document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')) {
+    meta.content = PAGE_COLOR[theme === 'system' ? (meta.media.includes('dark') ? 'dark' : 'light') : theme];
+  }
+}
+
+syncThemeColor(getTheme());
+
 // « system » retire l'attribut : le CSS suit alors prefers-color-scheme.
 export function setTheme(theme: Theme) {
+  syncThemeColor(theme);
   if (theme === 'system') {
     localStorage.removeItem(KEY);
     delete document.documentElement.dataset.theme;

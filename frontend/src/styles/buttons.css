@@ -125,6 +125,10 @@ button:disabled {
   background: var(--surface-2);
 }
 
+.segmented.three {
+  grid-template-columns: repeat(3, 1fr);
+}
+
 .segmented button {
   display: inline-flex;
   align-items: center;

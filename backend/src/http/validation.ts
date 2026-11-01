@@ -1,7 +1,7 @@
 // Erreurs HTTP et validation des entrées : tout ce qui vient du client est vérifié ici avant d'être utilisé.
 import type { Context } from 'hono';
 import { HTTPException } from 'hono/http-exception';
-import type { Fuel } from '../../../shared/types.ts';
+import type { Fuel, Priority } from '../../../shared/types.ts';
 
 // 403 est réservé à « confirme ton mot de passe » : le front affiche alors la demande et rejoue l'action.
 export const fail = (status: 400 | 401 | 403 | 404 | 409 | 413 | 429 | 503, message: string) =>
@@ -41,6 +41,25 @@ export function fuel(value: unknown): Fuel | null {
     pricePerLiter: positive(f.pricePerLiter, 'prix du litre'),
     extra: amount(f.extra ?? 0, 'supplément'),
   };
+}
+
+export function priority(value: unknown): Priority {
+  if (value !== 1 && value !== 2 && value !== 3) throw fail(400, 'Priorité invalide');
+  return value;
+}
+
+// Lien facultatif : seulement http(s), pour qu'un lien affiché ne puisse pas exécuter de script (javascript:…).
+export function link(value: unknown): string | null {
+  if (value === null || value === undefined || value === '') return null;
+  if (typeof value !== 'string' || value.length > 1000) throw fail(400, 'Lien invalide');
+  let url: URL;
+  try {
+    url = new URL(value.trim());
+  } catch {
+    throw fail(400, 'Lien invalide');
+  }
+  if (url.protocol !== 'https:' && url.protocol !== 'http:') throw fail(400, 'Lien invalide (http:// ou https://)');
+  return url.href;
 }
 
 export function monthParam(value: string): string {

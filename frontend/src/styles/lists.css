@@ -203,3 +203,17 @@
   background: color-mix(in srgb, var(--chip-color) 14%, transparent);
   color: color-mix(in srgb, var(--chip-color) 70%, var(--text));
 }
+
+/* Repère coloré en tête de ligne, à la place de la case « payé » (ex. entrées d'argent). */
+.row-mark {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  flex: none;
+  color: color-mix(in srgb, var(--chip-color) 85%, var(--text));
+}
+
+/* Un badge ou un lien de méta passe à la ligne en entier plutôt que d'être coupé. */
+.row-meta > * {
+  white-space: nowrap;
+}

@@ -84,6 +84,14 @@ const TABLES = `
     recurring_id INTEGER REFERENCES recurring(id) ON DELETE SET NULL,
     wish_id INTEGER REFERENCES wishes(id) ON DELETE SET NULL
   );
+
+  -- Entrées d'argent ponctuelles d'un mois (virement reçu, remboursement…), en plus du revenu.
+  CREATE TABLE IF NOT EXISTS incomes (
+    id INTEGER PRIMARY KEY,
+    month_id INTEGER NOT NULL REFERENCES months(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    amount REAL NOT NULL
+  );
 `;
 
 // Colonnes ajoutées après coup : créées sur les bases existantes sans toucher aux données.
@@ -93,6 +101,8 @@ const ADDED_COLUMNS: [table: string, column: string, definition: string][] = [
   ['users', 'totp_last_step', 'INTEGER NOT NULL DEFAULT 0'],
   ['users', 'email', 'TEXT'],
   ['sessions', 'verified_at', 'INTEGER NOT NULL DEFAULT 0'],
+  ['wishes', 'priority', 'INTEGER NOT NULL DEFAULT 2'], // 1 haute, 2 normale, 3 basse
+  ['wishes', 'url', 'TEXT'],
 ];
 
 export function applySchema(db: DatabaseSync) {

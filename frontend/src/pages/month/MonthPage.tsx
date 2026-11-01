@@ -7,17 +7,17 @@ import {
   ChevronRight,
   CircleCheck,
   Clock,
+  Gift,
   type LucideIcon,
   Plus,
   Receipt,
   RefreshCw,
   Repeat,
-  ShoppingBag,
   Trash2,
   TriangleAlert,
 } from 'lucide-react';
 import { type FormEvent, type ReactNode, useEffect, useState } from 'react';
-import type { Line, LineKind, Month, MonthResponse, Wish } from '../../../../shared/types';
+import { type Income, type Line, type LineKind, type Month, type MonthResponse, totalIncome, type Wish } from '../../../../shared/types';
 import { api } from '../../lib/api';
 import { BudgetBar } from '../../components/charts';
 import { Spinner } from '../../components/feedback';
@@ -31,13 +31,13 @@ type Apply = (request: Promise<Month>) => Promise<boolean>;
 // Même ordre et mêmes couleurs dans la barre, la légende et les sections.
 const SECTIONS: { kind: LineKind; title: string; color: string; tone: Tone; icon: LucideIcon }[] = [
   { kind: 'recurring', title: 'Charges', color: '--series-1', tone: 'blue', icon: Repeat },
-  { kind: 'purchase', title: 'Achats', color: '--series-2', tone: 'orange', icon: ShoppingBag },
+  { kind: 'purchase', title: 'Souhaits', color: '--series-2', tone: 'orange', icon: Gift },
   { kind: 'extra', title: 'Autres dépenses', color: '--series-3', tone: 'aqua', icon: Receipt },
 ];
 
 const section = (kind: LineKind) => SECTIONS.find((s) => s.kind === kind)!;
 
-const sum = (lines: Line[]) => lines.reduce((total, l) => total + l.amount, 0);
+const sum = (items: { amount: number }[]) => items.reduce((total, l) => total + l.amount, 0);
 
 export function MonthPage({ month, onMonthChange }: { month: string; onMonthChange: (month: string) => void }) {
   const [data, setData] = useState<MonthResponse | null>(null);
@@ -165,8 +165,9 @@ function CreateMonth({ month, suggestedIncome, apply }: { month: string; suggest
 
 function MonthDetails({ data, apply }: { data: Month; apply: Apply }) {
   const [syncing, setSyncing] = useState(false);
+  const income = totalIncome(data);
   const spent = sum(data.lines);
-  const remaining = data.income - spent;
+  const remaining = income - spent;
   const unpaidLines = data.lines.filter((l) => !l.paid);
   const paidCount = data.lines.length - unpaidLines.length;
   const byKind = (kind: LineKind) => data.lines.filter((l) => l.kind === kind);
@@ -193,7 +194,7 @@ function MonthDetails({ data, apply }: { data: Month; apply: Apply }) {
           )}
         </div>
         <BudgetBar
-          income={data.income}
+          income={income}
           segments={SECTIONS.map((s) => ({ key: s.kind, label: s.title, value: sum(byKind(s.kind)), color: s.color }))}
         />
         <div className="stats">
@@ -209,6 +210,7 @@ function MonthDetails({ data, apply }: { data: Month; apply: Apply }) {
                 value={data.income}
                 onCommit={(income) => apply(api(`/months/${data.month}`, { method: 'PATCH', body: { income } }))}
               />
+              {data.incomes.length > 0 && <span className="stat-hint">+ {money(sum(data.incomes))} d'entrées</span>}
             </div>
           </div>
           <div className="stat">
@@ -238,6 +240,7 @@ function MonthDetails({ data, apply }: { data: Month; apply: Apply }) {
         </div>
       </section>
 
+      <IncomeSection data={data} apply={apply} />
       <Section
         kind="recurring"
         lines={byKind('recurring')}
@@ -258,13 +261,49 @@ function MonthDetails({ data, apply }: { data: Month; apply: Apply }) {
         }
         empty="Aucune charge. Ajoute-les dans l'onglet Charges."
       />
-      <Section kind="purchase" lines={byKind('purchase')} apply={apply} empty="Aucun achat prévu ce mois-ci.">
+      <Section kind="purchase" lines={byKind('purchase')} apply={apply} empty="Aucun souhait prévu ce mois-ci.">
         <AddWish data={data} apply={apply} />
       </Section>
       <Section kind="extra" lines={byKind('extra')} apply={apply} empty="Rien d'autre pour l'instant.">
-        <AddExpense month={data.month} apply={apply} />
+        <AddRow
+          placeholder="Ajouter une dépense…"
+          onAdd={(name, amount) => apply(api(`/months/${data.month}/lines`, { method: 'POST', body: { name, amount } }))}
+        />
       </Section>
     </div>
+  );
+}
+
+// Carte d'une section du mois : en-tête (icône, titre, nombre, total), lignes ou message vide, puis formulaire d'ajout.
+function SectionCard({ title, tone, icon, count, total, action, empty, rows, children }: {
+  title: string;
+  tone: Tone;
+  icon: ReactNode;
+  count: number;
+  total: ReactNode;
+  action?: ReactNode;
+  empty: string;
+  rows: ReactNode;
+  children?: ReactNode;
+}) {
+  return (
+    <section className="card section">
+      <header className="section-head">
+        <h2>
+          <IconChip tone={tone} size="small">
+            {icon}
+          </IconChip>
+          {title}
+          <span className="count">{count}</span>
+        </h2>
+        <div className="section-total">
+          {action}
+          <strong>{total}</strong>
+        </div>
+      </header>
+      {count > 0 ? <ul className="rows">{rows}</ul> : <p className="muted section-empty">{empty}</p>}
+      {children}
+    </section>
   );
 }
 
@@ -278,31 +317,61 @@ function Section({ kind, lines, apply, action, empty, children }: {
 }) {
   const { title, tone, icon: Icon } = section(kind);
   return (
-    <section className="card section">
-      <header className="section-head">
-        <h2>
-          <IconChip tone={tone} size="small">
-            <Icon size={14} />
-          </IconChip>
-          {title}
-          <span className="count">{lines.length}</span>
-        </h2>
-        <div className="section-total">
-          {action}
-          <strong>{money(sum(lines))}</strong>
-        </div>
-      </header>
-      {lines.length > 0 ? (
-        <ul className="rows">
-          {lines.map((line) => (
-            <LineRow key={line.id} line={line} apply={apply} />
-          ))}
-        </ul>
-      ) : (
-        <p className="muted section-empty">{empty}</p>
-      )}
+    <SectionCard
+      title={title}
+      tone={tone}
+      icon={<Icon size={14} />}
+      count={lines.length}
+      total={money(sum(lines))}
+      action={action}
+      empty={empty}
+      rows={lines.map((line) => (
+        <LineRow key={line.id} line={line} apply={apply} />
+      ))}
+    >
       {children}
-    </section>
+    </SectionCard>
+  );
+}
+
+// Virements reçus, remboursements… : ils s'ajoutent au revenu du mois.
+function IncomeSection({ data, apply }: { data: Month; apply: Apply }) {
+  return (
+    <SectionCard
+      title="Entrées d'argent"
+      tone="good"
+      icon={<ArrowDownLeft size={14} />}
+      count={data.incomes.length}
+      total={`+ ${money(sum(data.incomes))}`}
+      empty="Un virement reçu, un remboursement ? Ajoute-le ici, il s'ajoute à ton revenu du mois."
+      rows={data.incomes.map((income) => (
+        <IncomeRow key={income.id} income={income} apply={apply} />
+      ))}
+    >
+      <AddRow
+        placeholder="Ajouter une entrée (virement, remboursement…)"
+        onAdd={(name, amount) => apply(api(`/months/${data.month}/incomes`, { method: 'POST', body: { name, amount } }))}
+      />
+    </SectionCard>
+  );
+}
+
+function IncomeRow({ income, apply }: { income: Income; apply: Apply }) {
+  const patch = (body: object) => apply(api(`/incomes/${income.id}`, { method: 'PATCH', body }));
+
+  return (
+    <li className="row">
+      <span className="row-mark tone-good" aria-hidden="true">
+        <ArrowDownLeft size={18} />
+      </span>
+      <div className="row-main">
+        <TextInput label="Nom" value={income.name} onCommit={(name) => patch({ name })} />
+      </div>
+      <AmountInput label="Montant" value={income.amount} onCommit={(amount) => patch({ amount })} />
+      <button className="icon-btn danger" onClick={() => apply(api(`/incomes/${income.id}`, { method: 'DELETE' }))} aria-label="Supprimer">
+        <Trash2 size={16} />
+      </button>
+    </li>
   );
 }
 
@@ -335,7 +404,8 @@ function LineRow({ line, apply }: { line: Line; apply: Apply }) {
   );
 }
 
-function AddExpense({ month, apply }: { month: string; apply: Apply }) {
+// Ligne d'ajout « nom + montant » en bas d'une section.
+function AddRow({ placeholder, onAdd }: { placeholder: string; onAdd: (name: string, amount: number) => Promise<boolean> }) {
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
 
@@ -343,7 +413,7 @@ function AddExpense({ month, apply }: { month: string; apply: Apply }) {
     e.preventDefault();
     const value = parseAmount(amount);
     if (!name.trim() || value === null) return;
-    if (await apply(api(`/months/${month}/lines`, { method: 'POST', body: { name, amount: value } }))) {
+    if (await onAdd(name, value)) {
       setName('');
       setAmount('');
     }
@@ -352,7 +422,7 @@ function AddExpense({ month, apply }: { month: string; apply: Apply }) {
   return (
     <form className="add-row" onSubmit={submit}>
       <Plus size={16} className="muted" />
-      <input placeholder="Ajouter une dépense…" value={name} onChange={(e) => setName(e.target.value)} />
+      <input placeholder={placeholder} value={name} onChange={(e) => setName(e.target.value)} />
       <input className="amount" placeholder="0,00" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} />
       <button type="submit" className="primary small" disabled={!name.trim() || parseAmount(amount) === null}>
         Ajouter
@@ -364,7 +434,7 @@ function AddExpense({ month, apply }: { month: string; apply: Apply }) {
 function AddWish({ data, apply }: { data: Month; apply: Apply }) {
   const [wishes, setWishes] = useState<Wish[]>([]);
 
-  // Recharge la liste quand les lignes changent, pour masquer les achats déjà prévus.
+  // Recharge la liste quand les lignes changent, pour masquer les souhaits déjà prévus.
   useEffect(() => {
     api<Wish[]>('/wishes').then(setWishes, () => setWishes([]));
   }, [data.lines.length]);
@@ -378,9 +448,9 @@ function AddWish({ data, apply }: { data: Month; apply: Apply }) {
       <select
         value=""
         onChange={(e) => apply(api(`/months/${data.month}/lines`, { method: 'POST', body: { wishId: Number(e.target.value) } }))}
-        aria-label="Ajouter un achat prévu"
+        aria-label="Ajouter un souhait de ta liste"
       >
-        <option value="">Ajouter un achat de ta liste…</option>
+        <option value="">Ajouter un souhait de ta liste…</option>
         {available.map((w) => (
           <option key={w.id} value={w.id}>
             {w.name} — {money(w.price)}

@@ -56,9 +56,17 @@ export interface Line {
   wishId: number | null;
 }
 
+// Entrée d'argent ponctuelle (virement reçu, remboursement…), qui s'ajoute au revenu du mois.
+export interface Income {
+  id: number;
+  name: string;
+  amount: number;
+}
+
 export interface Month {
   month: string; // AAAA-MM
-  income: number;
+  income: number; // revenu habituel (salaire…)
+  incomes: Income[];
   lines: Line[];
 }
 
@@ -69,18 +77,24 @@ export interface MonthResponse {
 
 export interface MonthSummary {
   month: string;
-  income: number;
+  income: number; // revenu + entrées ponctuelles
   spent: number;
   unpaid: number;
 }
+
+export type Priority = 1 | 2 | 3; // haute, normale, basse
 
 export interface Wish {
   id: number;
   name: string;
   price: number;
+  priority: Priority;
+  url: string | null;
   done: boolean;
   plannedMonth: string | null;
 }
+
+export const totalIncome = (m: Month) => m.income + m.incomes.reduce((t, i) => t + i.amount, 0);
 
 export const round2 = (n: number) => Math.round(n * 100) / 100;
 

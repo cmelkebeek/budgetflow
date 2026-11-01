@@ -1,0 +1,42 @@
+/* ---------- Liste de souhaits ---------- */
+
+.wish-add {
+  padding: 0;
+}
+
+.wish-add .add-row:first-child {
+  border-top: none;
+}
+
+.wish-add-extra input {
+  font-size: 0.875rem;
+}
+
+.wish-add .wish-add-extra select {
+  flex: none;
+  font-size: 0.875rem;
+}
+
+.wish-summary {
+  padding: 1.1rem 1.25rem;
+}
+
+.wish-summary .stats {
+  border-top: none;
+  padding-top: 0;
+}
+
+/* Priorité modifiable directement depuis la ligne : une liste déroulante habillée en badge. */
+.badge-select {
+  appearance: none;
+  border: none;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.badge-select:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}

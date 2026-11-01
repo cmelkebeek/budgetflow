@@ -7,7 +7,7 @@ import { accountRoutes } from './account/routes.ts';
 import { authRoutes } from './auth/routes.ts';
 import { purgeExpired } from './auth/sessions.ts';
 import { prepareTwoFactorSecrets } from './auth/two-factor.ts';
-import { monthRoutes, lineRoutes } from './budget/months.ts';
+import { incomeRoutes, lineRoutes, monthRoutes } from './budget/months.ts';
 import { recurringRoutes } from './budget/recurring.ts';
 import { wishRoutes } from './budget/wishes.ts';
 import { FRONTEND_DIR, PORT } from './config.ts';
@@ -42,6 +42,7 @@ app.route('/api', accountRoutes);
 app.route('/api/recurring', recurringRoutes);
 app.route('/api/months', monthRoutes);
 app.route('/api/lines', lineRoutes);
+app.route('/api/incomes', incomeRoutes);
 app.route('/api/wishes', wishRoutes);
 app.all('/api/*', (c) => c.json({ error: 'Introuvable' }, 404));
 

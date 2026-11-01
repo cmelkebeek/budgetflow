@@ -5,6 +5,7 @@
     display: block;
   }
 
+  /* Barre d'onglets façon iOS : fixée en bas, translucide et floutée, au-dessus de la barre d'accueil de l'iPhone. */
   .sidebar {
     position: fixed;
     top: auto;
@@ -13,9 +14,13 @@
     right: 0;
     height: auto;
     z-index: 50;
-    padding: 0.3rem 0.25rem calc(0.3rem + env(safe-area-inset-bottom));
+    padding: 0.35rem max(0.25rem, env(safe-area-inset-right)) max(0.35rem, env(safe-area-inset-bottom))
+      max(0.25rem, env(safe-area-inset-left));
     border-right: none;
-    border-top: 1px solid var(--border);
+    border-top: 0.5px solid var(--border);
+    background: color-mix(in srgb, var(--surface) 78%, transparent);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
   }
 
   .brand,
@@ -26,23 +31,56 @@
   .sidebar nav {
     flex-direction: row;
     justify-content: space-around;
+    gap: 0;
   }
 
   .nav-item {
     flex: 1;
     flex-direction: column;
-    gap: 0.15rem;
-    padding: 0.35rem 0.1rem;
-    font-size: 0.7rem;
+    justify-content: center;
+    gap: 0.2rem;
+    min-height: 49px;
+    padding: 0.25rem 0;
+    border-radius: 0;
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: var(--muted);
     text-align: center;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+  }
+
+  .nav-item svg {
+    width: 25px;
+    height: 25px;
+    stroke-width: 1.75;
+    transition: transform 0.15s;
+  }
+
+  .nav-item:hover {
+    background: transparent;
+    color: var(--muted);
+  }
+
+  .nav-item:active svg {
+    transform: scale(0.88);
   }
 
   .nav-item.active {
     background: transparent;
+    color: var(--accent-ink);
+    font-weight: 600;
+  }
+
+  .nav-item.active svg {
+    stroke-width: 2.25;
   }
 
   .content {
-    padding: 1.25rem 0.85rem 6rem;
+    padding: 1.25rem max(0.85rem, env(safe-area-inset-right)) calc(5.5rem + env(safe-area-inset-bottom))
+      max(0.85rem, env(safe-area-inset-left));
   }
 
   .page-header h1 {
@@ -84,6 +122,6 @@
   }
 
   .toaster {
-    bottom: 5.5rem;
+    bottom: calc(5.5rem + env(safe-area-inset-bottom));
   }
 }

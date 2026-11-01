@@ -5,6 +5,7 @@ import type { Env } from '../http/session.ts';
 import { amount, fail, fuel, idParam, monthParam, readBody, text } from '../http/validation.ts';
 import {
   fuelCost,
+  type Income,
   type Line,
   type LineKind,
   type Month,
@@ -51,8 +52,9 @@ function requireMonth(userId: number, month: string): number {
 
 function loadMonth(id: number): Month {
   const m = get<{ month: string; income: number }>('SELECT month, income FROM months WHERE id = ?', id)!;
+  const incomes = all<Income>('SELECT id, name, amount FROM incomes WHERE month_id = ? ORDER BY id', id);
   const lines = all<LineRow>('SELECT * FROM lines WHERE month_id = ? ORDER BY id', id).map(toLine);
-  return { month: m.month, income: m.income, lines };
+  return { month: m.month, income: m.income, incomes, lines };
 }
 
 function insertRecurringLine(monthId: number, r: Recurring) {
@@ -80,7 +82,7 @@ export const monthRoutes = new Hono<Env>();
 monthRoutes.get('/', (c) =>
   c.json(
     all<MonthSummary>(
-      `SELECT m.month, m.income,
+      `SELECT m.month, m.income + (SELECT COALESCE(SUM(i.amount), 0) FROM incomes i WHERE i.month_id = m.id) AS income,
               COALESCE(SUM(l.amount), 0) AS spent,
               COALESCE(SUM(CASE WHEN l.paid = 1 THEN 0 ELSE l.amount END), 0) AS unpaid
        FROM months m LEFT JOIN lines l ON l.month_id = m.id
@@ -145,7 +147,7 @@ monthRoutes.post('/:month/sync', (c) => {
   return c.json(loadMonth(id));
 });
 
-// Ajoute une dépense ponctuelle (déjà payée : on la saisit une fois faite), ou un achat de la liste (wishId).
+// Ajoute une dépense ponctuelle (déjà payée : on la saisit une fois faite), ou un souhait de la liste (wishId).
 monthRoutes.post('/:month/lines', async (c) => {
   const userId = c.var.user.id;
   const id = requireMonth(userId, monthParam(c.req.param('month')));
@@ -153,11 +155,11 @@ monthRoutes.post('/:month/lines', async (c) => {
   if (body.wishId !== undefined) {
     const wish = get<{ id: number; name: string; price: number }>(
       'SELECT * FROM wishes WHERE id = ? AND user_id = ?',
-      amount(body.wishId, 'achat'),
+      amount(body.wishId, 'souhait'),
       userId,
     );
-    if (!wish) throw fail(404, 'Achat introuvable');
-    if (get('SELECT 1 FROM lines WHERE wish_id = ?', wish.id)) throw fail(409, 'Cet achat est déjà prévu dans un mois');
+    if (!wish) throw fail(404, 'Souhait introuvable');
+    if (get('SELECT 1 FROM lines WHERE wish_id = ?', wish.id)) throw fail(409, 'Ce souhait est déjà prévu dans un mois');
     run(`INSERT INTO lines (month_id, name, amount, kind, wish_id) VALUES (?, ?, ?, 'purchase', ?)`, id, wish.name, wish.price, wish.id);
   } else {
     run(`INSERT INTO lines (month_id, name, amount, kind, paid) VALUES (?, ?, ?, 'extra', 1)`, id, text(body.name, 'nom'), amount(body.amount, 'montant'));
@@ -184,7 +186,7 @@ lineRoutes.patch('/:id', async (c) => {
     if (body.paid !== undefined) {
       const paid = body.paid === true ? 1 : 0;
       run('UPDATE lines SET paid = ? WHERE id = ?', paid, line.id);
-      // Payer la ligne d'un achat prévu marque l'achat comme fait.
+      // Payer la ligne d'un souhait le marque comme acheté.
       if (line.wish_id !== null) run('UPDATE wishes SET done = ? WHERE id = ?', paid, line.wish_id);
     }
   });
@@ -195,4 +197,39 @@ lineRoutes.delete('/:id', (c) => {
   const line = ownLine(idParam(c.req.param('id')), c.var.user.id);
   run('DELETE FROM lines WHERE id = ?', line.id);
   return c.json(loadMonth(line.month_id));
+});
+
+// ---------- Entrées d'argent ponctuelles ----------
+
+monthRoutes.post('/:month/incomes', async (c) => {
+  const id = requireMonth(c.var.user.id, monthParam(c.req.param('month')));
+  const body = await readBody(c);
+  run('INSERT INTO incomes (month_id, name, amount) VALUES (?, ?, ?)', id, text(body.name, 'nom'), amount(body.amount, 'montant'));
+  return c.json(loadMonth(id));
+});
+
+export const incomeRoutes = new Hono<Env>();
+
+function ownIncome(incomeId: number, userId: number) {
+  const income = get<{ id: number; month_id: number }>(
+    'SELECT i.id, i.month_id FROM incomes i JOIN months m ON m.id = i.month_id WHERE i.id = ? AND m.user_id = ?',
+    incomeId,
+    userId,
+  );
+  if (!income) throw fail(404, 'Entrée introuvable');
+  return income;
+}
+
+incomeRoutes.patch('/:id', async (c) => {
+  const income = ownIncome(idParam(c.req.param('id')), c.var.user.id);
+  const body = await readBody(c);
+  if (body.name !== undefined) run('UPDATE incomes SET name = ? WHERE id = ?', text(body.name, 'nom'), income.id);
+  if (body.amount !== undefined) run('UPDATE incomes SET amount = ? WHERE id = ?', amount(body.amount, 'montant'), income.id);
+  return c.json(loadMonth(income.month_id));
+});
+
+incomeRoutes.delete('/:id', (c) => {
+  const income = ownIncome(idParam(c.req.param('id')), c.var.user.id);
+  run('DELETE FROM incomes WHERE id = ?', income.id);
+  return c.json(loadMonth(income.month_id));
 });

@@ -2,9 +2,21 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- viewport-fit=cover : nécessaire pour que env(safe-area-inset-*) tienne compte de la barre d'accueil de l'iPhone.
+         maximum-scale=1 : évite le zoom automatique d'iOS sur les champs (le zoom à deux doigts reste possible sur iOS). -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
     <title>BudgetFlow</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#f6f6f3" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)" />
+    <!-- Ajout à l'écran d'accueil : s'ouvre en plein écran, comme une app. -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="BudgetFlow" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <script src="/theme-init.js"></script>
   </head>
   <body>
